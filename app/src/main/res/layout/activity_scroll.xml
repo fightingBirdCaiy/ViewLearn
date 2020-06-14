@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorGray"
+    >
+
+    <TextView
+        android:id="@+id/tv_log"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        />
+
+    <com.caiy.view.learn.view.custom.MyScrollView
+        android:id="@+id/sv_1"
+        android:layout_width="400px"
+        android:layout_height="400px"
+        android:layout_marginLeft="200px"
+        android:layout_marginTop="200px"
+        android:orientation="vertical"
+        >
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="100px"
+            android:background="@color/colorRed"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="100px"
+            android:background="@color/colorPink"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="100px"
+            android:background="@color/colorRed"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="100px"
+            android:background="@color/colorPink"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="100px"
+            android:background="@color/colorRed"
+            />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="100px"
+            android:background="@color/colorPink"
+            />
+    </com.caiy.view.learn.view.custom.MyScrollView>
+</FrameLayout>
