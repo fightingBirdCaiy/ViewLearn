@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ScrollActivity"/>
+        <activity android:name=".FocusActivity"/>
     </application>
 
 </manifest>
