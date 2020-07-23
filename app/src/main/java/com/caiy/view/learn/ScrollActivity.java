@@ -5,9 +5,9 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 
 import com.caiy.view.learn.view.custom.MyScrollView;
 
@@ -22,7 +22,7 @@ public class ScrollActivity extends Activity {
     private Rect mTempRect = new Rect();
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scroll);
         initView();
@@ -30,15 +30,16 @@ public class ScrollActivity extends Activity {
     }
 
     private void initView() {
-        mLogTextView = findViewById(R.id.tv_log);
-        mScrollView = findViewById(R.id.sv_1);
+        mLogTextView = (TextView) findViewById(R.id.tv_log);
+        mScrollView = (MyScrollView) findViewById(R.id.sv_1);
     }
 
     private void test() {
         mScrollView.setBackgroundColor(getResources().getColor(R.color.colorBlue));
 
-        mScrollView.setScrollX(0);
-        mScrollView.setScrollY(-50);
+        ((ViewGroup)mScrollView.getParent()).setClipChildren(false);
+        mScrollView.setClipChildren(false);
+        mScrollView.setScrollY(480);
         log();
     }
 

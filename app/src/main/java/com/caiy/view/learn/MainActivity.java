@@ -1,13 +1,12 @@
 package com.caiy.view.learn;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
 
@@ -19,9 +18,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void test() {
-//        routeToScrollActivity();
+        routeToScrollActivity();
 //        testSparseArray();
-        routeToFocusActivity();
+//        routeToFocusActivity();
     }
 
     private void routeToScrollActivity() {

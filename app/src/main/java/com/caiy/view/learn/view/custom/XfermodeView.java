@@ -9,8 +9,6 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
-import androidx.annotation.Nullable;
-
 /**
  * created by caiyong at 2020/5/26
  *
@@ -25,11 +23,11 @@ public class XfermodeView extends View {
         this(context, null);
     }
 
-    public XfermodeView(Context context, @Nullable AttributeSet attrs) {
+    public XfermodeView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public XfermodeView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public XfermodeView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
