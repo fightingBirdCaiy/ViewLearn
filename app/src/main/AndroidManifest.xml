@@ -17,6 +17,7 @@
         </activity>
         <activity android:name=".ScrollActivity"/>
         <activity android:name=".FocusActivity"/>
+        <activity android:name=".ListActivity"/>
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@
 <resources>
     <color name="colorBlue">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorWhite">#cbcbcb</color>
     <color name="colorPink">#D81B60</color>
     <color name="colorRed">#FF0000</color>
     <color name="colorGray">#666666</color>
