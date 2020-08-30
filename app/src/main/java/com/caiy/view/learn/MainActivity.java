@@ -21,7 +21,8 @@ public class MainActivity extends Activity {
 //        routeToScrollActivity();
 //        testSparseArray();
 //        routeToFocusActivity();
-        routeToListActivity();
+//        routeToListActivity();
+        routeToDrawableActivity();
     }
 
     private void routeToScrollActivity() {
@@ -63,5 +64,9 @@ public class MainActivity extends Activity {
 
     private void routeToListActivity() {
         startActivity(new Intent(MainActivity.this, ListActivity.class));
+    }
+
+    private void routeToDrawableActivity() {
+        startActivity(new Intent(MainActivity.this, DrawableActivity.class));
     }
 }

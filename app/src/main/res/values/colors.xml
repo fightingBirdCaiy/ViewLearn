@@ -3,7 +3,12 @@
     <color name="colorBlue">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorWhite">#cbcbcb</color>
+    <color name="colorWhiteOpaque">#ffffff</color>
     <color name="colorPink">#D81B60</color>
     <color name="colorRed">#FF0000</color>
     <color name="colorGray">#666666</color>
+
+    <color name="task_item_progress_bg">#19FFFFFF</color>
+    <color name="task_item_progress_start">#1B9F00</color>
+    <color name="task_item_progress_end">#1DEA16</color>
 </resources>
