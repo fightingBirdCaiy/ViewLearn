@@ -22,11 +22,12 @@ public class MainActivity extends Activity {
 //        testSparseArray();
 //        routeToFocusActivity();
 //        routeToListActivity();
-        routeToDrawableActivity();
+//        routeToDrawableActivity();
+        routeToScrollDrawableActivity();
     }
 
     private void routeToScrollActivity() {
-        startActivity(new Intent(MainActivity.this, ScrollActivity.class));
+        startActivity(new Intent(MainActivity.this, ScrollDrawableActivity.class));
     }
 
     private void testSparseArray() {
@@ -68,5 +69,9 @@ public class MainActivity extends Activity {
 
     private void routeToDrawableActivity() {
         startActivity(new Intent(MainActivity.this, DrawableActivity.class));
+    }
+
+    private void routeToScrollDrawableActivity() {
+        startActivity(new Intent(MainActivity.this, ScrollDrawableActivity.class));
     }
 }
