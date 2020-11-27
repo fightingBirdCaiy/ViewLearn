@@ -1,55 +1,75 @@
 package com.caiy.view.learn.view.custom;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
+import android.graphics.Path;
+import android.graphics.PorterDuff.Mode;
+import android.graphics.Rect;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.util.Log;
+import android.view.animation.LinearInterpolator;
+import android.widget.Scroller;
+
 
 /**
  * created by caiyong at 2020/11/10
  */
 
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
-import android.graphics.*;
-import android.graphics.PorterDuff.Mode;
-import android.os.Build;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.animation.LinearInterpolator;
-import android.widget.Scroller;
-
 public class ScrollDrawable extends Drawable implements Drawable.Callback, Animatable {
 
     private final String TAG = "ScrollDrawable";
+    private static final int DEFAULT_SPEED = 40;//40px/秒
 
     private ScrollState mState;
     private boolean mMutated;
     private Scroller mScroller;
-    private int DURATION_SCROLL = 3000;
 
     private Rect mDrawRect = new Rect();
 
     private boolean mAnimRunning;
 
-    public ScrollDrawable(Drawable drawable, Context context) {
-        this(drawable, context, Gravity.TOP);
-    }
+    /**
+     * 滚动速度： 像素/秒
+     */
+    private int mSpeed = DEFAULT_SPEED;
 
-    public ScrollDrawable(Drawable drawable, Context context, int gravity) {
+    /**
+     * 是否保持以前setBounds的高度不变
+     */
+    private boolean mRetainBoundLastHeight;
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            invalidateSelf();
+        }
+    };
+
+    public ScrollDrawable(Drawable drawable, Context context) {
         this((ScrollState) null, (Resources) null);
 
         mState.mDrawable = drawable;
-        mState.mGravity = gravity;
-        mScroller = new Scroller(context, new LinearInterpolator());
-
         if (drawable != null) {
             drawable.setCallback(this);
         }
+
+        mScroller = new Scroller(context, new LinearInterpolator());
     }
 
-    // overrides from Drawable.Callback
+    public void setSpeed(int speed) {
+        this.mSpeed = speed;
+    }
+
+    public void setRetainBoundLastHeight(boolean retain) {
+        mRetainBoundLastHeight = retain;
+    }
+
+    //--- overrides from Drawable.Callback start ---
     @Override
     public void invalidateDrawable(Drawable who) {
         if (getCallback() != null) {
@@ -70,27 +90,27 @@ public class ScrollDrawable extends Drawable implements Drawable.Callback, Anima
             getCallback().unscheduleDrawable(this, what);
         }
     }
+    //--- overrides from Drawable.Callback end ---
 
-    // overrides from Drawable
+    //--- overrides from Drawable start ---
     @Override
     public void draw(Canvas canvas) {
         canvas.save();
 
-        boolean shouldScroll = mScroller.computeScrollOffset();
-        if (shouldScroll) {
-            int scrollY = mScroller.getCurrY();
-            canvas.translate(0, scrollY);
-        } else if (mScroller.getFinalY() != 0) {
-            mAnimRunning = false;
-            canvas.translate(0, mScroller.getFinalY());
+        boolean shouldScroll = false;
+        if (mAnimRunning) {
+            if (shouldScroll = mScroller.computeScrollOffset()) {
+                canvas.translate(0, mScroller.getCurrY());
+            } else if (mScroller.isFinished()) {
+                canvas.translate(0, mScroller.getFinalY());
+            }
         }
 
         mState.mDrawable.draw(canvas);
 
         if (shouldScroll) {
-            invalidateSelf();
+            scheduleSelf(runnable, 0L);
         }
-
         canvas.restore();
     }
 
@@ -117,13 +137,12 @@ public class ScrollDrawable extends Drawable implements Drawable.Callback, Anima
         mState.mDrawable.setAlpha(alpha);
     }
 
-
     @Override
     public int getAlpha() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//TODO---
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             return mState.mDrawable.getAlpha();
         }
-        return 0xFF;
+        return 255;
     }
 
     @Override
@@ -170,16 +189,18 @@ public class ScrollDrawable extends Drawable implements Drawable.Callback, Anima
         int w = bounds.width();
         int h = bounds.height();
 
+        if (mRetainBoundLastHeight) {
+            mState.mDrawable.setBounds(0, 0, w, mDrawRect.height());//宽度逐渐变窄动画中: 宽度w不断减少，高度值保持以前的值不变
+            return;
+        }
+
         if (w > 0 && h > 0) {
-            int targetW;
-            int targetH;
             int bitmapW = mState.mDrawable.getIntrinsicWidth();
             int bitmapH = mState.mDrawable.getIntrinsicHeight();
             float ration = bitmapW * 1F / w;
-            targetW = w;
-            targetH = (int)(bitmapH / ration + 0.5F);
+            int targetW = w;
+            int targetH = Math.max(h, (int) (bitmapH / ration + 0.5F));
             mDrawRect.set(0, 0, targetW, targetH);
-            Log.i(TAG, "onBoundsChange: bounds=" + bounds + " bitmapW=" + bitmapW + " bitmapH=" + bitmapH + " resultRect=" + mDrawRect);
             mState.mDrawable.setBounds(mDrawRect);
         } else {
             Log.w(TAG, "onBoundsChange warn: w=" + w + " h=" + h);
@@ -213,16 +234,17 @@ public class ScrollDrawable extends Drawable implements Drawable.Callback, Anima
         }
         return this;
     }
+    //--- overrides from Drawable end ---
 
     @Override
     public void start() {
         if (!isRunning()) {
             int yDistance = getBounds().height() - mDrawRect.height();
-            Log.i(TAG, "start: yDistance=" + yDistance);
-            if (yDistance != 0) {
+            Log.d(TAG, "start: scroll yDistance=" + yDistance);
+            if (yDistance < 0) {
                 mAnimRunning = true;
-                mScroller.startScroll(0, 0, 0, yDistance, DURATION_SCROLL);
-                invalidateSelf();
+                mScroller.startScroll(0, 0, 0, yDistance, calculateDuration(yDistance));
+                scheduleSelf(runnable, 0L);
             }
         }
     }
@@ -230,6 +252,7 @@ public class ScrollDrawable extends Drawable implements Drawable.Callback, Anima
     @Override
     public void stop() {
         if (isRunning()) {
+            Log.d(TAG, "stop");
             mAnimRunning = false;
             mScroller.abortAnimation();
         }
@@ -240,11 +263,15 @@ public class ScrollDrawable extends Drawable implements Drawable.Callback, Anima
         return mAnimRunning;
     }
 
+    private int calculateDuration(int distance) {
+        int speed = mSpeed > 0 ? mSpeed : DEFAULT_SPEED;
+        distance = Math.abs(distance);
+        return (int)(distance * 1000L / speed);
+    }
+
     final static class ScrollState extends ConstantState {
 
         Drawable mDrawable;
-
-        int mGravity = Gravity.TOP;
 
         int mChangingConfigurations;
         private boolean mCheckedConstantState;
@@ -260,18 +287,8 @@ public class ScrollDrawable extends Drawable implements Drawable.Callback, Anima
                 }
                 mDrawable.setCallback(owner);
                 mDrawable.setBounds(orig.mDrawable.getBounds());
-                mGravity = orig.mGravity;
                 mCheckedConstantState = mCanConstantState = true;
             }
-        }
-
-        @Override
-        public boolean canApplyTheme() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                return (mDrawable != null && mDrawable.canApplyTheme())
-                        || super.canApplyTheme();
-            }
-            return super.canApplyTheme();
         }
 
         @Override

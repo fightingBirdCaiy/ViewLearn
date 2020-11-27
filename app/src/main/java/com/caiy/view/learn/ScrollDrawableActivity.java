@@ -1,6 +1,7 @@
 package com.caiy.view.learn;
 
 import android.app.Activity;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,8 @@ import android.widget.ImageView;
 
 import com.caiy.view.learn.view.custom.ScrollDrawable;
 import com.caiy.view.learn.view.drawable.ProgressDrawable;
+import com.caiy.view.learn.view.drawable.round.RoundedBitmapDrawable;
+import com.caiy.view.learn.view.drawable.round.RoundedBitmapDrawableFactory;
 
 /**
  * created by caiyong at 2020/6/14
@@ -31,9 +34,11 @@ public class ScrollDrawableActivity extends Activity {
         mPosterImageView = (ImageView)findViewById(R.id.iv_poster);
         mPosterImageView.setFocusable(true);
         Drawable bitmapDrawable = getResources().getDrawable(R.drawable.taohuayuan_440_608);
-        final ScrollDrawable scrollDrawable = new ScrollDrawable(bitmapDrawable, mPosterImageView.getContext(), Gravity.LEFT);
+        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), ((BitmapDrawable)bitmapDrawable).getBitmap());
+        roundedBitmapDrawable.setCornerRadius(20F);
+        final ScrollDrawable scrollDrawable = new ScrollDrawable(roundedBitmapDrawable, mPosterImageView.getContext());
         mPosterImageView.setImageDrawable(scrollDrawable);
-        Log.i(TAG, bitmapDrawable + " drawable's width=" + bitmapDrawable.getIntrinsicWidth() + " drawable's height=" + bitmapDrawable.getIntrinsicHeight());
+        Log.i(TAG, roundedBitmapDrawable + " drawable's width=" + roundedBitmapDrawable.getIntrinsicWidth() + " drawable's height=" + roundedBitmapDrawable.getIntrinsicHeight());
 
         mPosterImageView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
