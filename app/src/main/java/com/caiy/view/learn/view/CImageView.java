@@ -1,9 +1,5 @@
 package com.caiy.view.learn.view;
 
-/**
- * created by caiyong at 2020/11/27
- */
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -30,6 +26,7 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
+import android.widget.ImageView;
 
 
 import java.io.IOException;
@@ -37,12 +34,13 @@ import java.io.InputStream;
 
 import androidx.annotation.Nullable;
 
+import com.caiy.view.learn.utils.ReflectUtil;
+
 
 /**
  * created by caiyong at 2020/11/27
  */
-
-public class CustomImageView extends View {
+public class CImageView extends View {
     // settable by the client
     private Uri mUri;
     private int mResource = 0;
@@ -83,9 +81,6 @@ public class CustomImageView extends View {
     private int mBaseline = -1;
     private boolean mBaselineAlignBottom = false;
 
-    // AdjustViewBounds behavior will be in compatibility mode for older apps.
-    private boolean mAdjustViewBoundsCompat = false;
-
     private Context mContext;
 
     private static final android.widget.ImageView.ScaleType[] sScaleTypeArray = {
@@ -99,7 +94,7 @@ public class CustomImageView extends View {
             android.widget.ImageView.ScaleType.CENTER_INSIDE
     };
 
-    public CustomImageView(Context context) {
+    public CImageView(Context context) {
         super(context);
         mContext = context;
         initImageView();
@@ -107,8 +102,7 @@ public class CustomImageView extends View {
 
     private void initImageView() {
         mMatrix     = new Matrix();
-        mScaleType  = android.widget.ImageView.ScaleType.FIT_CENTER;
-        mAdjustViewBoundsCompat = mContext.getApplicationInfo().targetSdkVersion <= Build.VERSION_CODES.JELLY_BEAN_MR1;
+        mScaleType  = ImageView.ScaleType.FIT_CENTER;
     }
 
     @Override
@@ -300,65 +294,6 @@ public class CustomImageView extends View {
         }
     }
 
-    /**
-     * Options for scaling the bounds of an image to the bounds of this view.
-     */
-    public enum ScaleType {
-        /**
-         * Scale using the image matrix when drawing. The image matrix can be set using
-         * {@link android.widget.ImageView#setImageMatrix(Matrix)}. From XML, use this syntax:
-         * <code>android:scaleType="matrix"</code>.
-         */
-        MATRIX      (0),
-        /**
-         * Scale the image using {@link Matrix.ScaleToFit#FILL}.
-         * From XML, use this syntax: <code>android:scaleType="fitXY"</code>.
-         */
-        FIT_XY      (1),
-        /**
-         * Scale the image using {@link Matrix.ScaleToFit#START}.
-         * From XML, use this syntax: <code>android:scaleType="fitStart"</code>.
-         */
-        FIT_START   (2),
-        /**
-         * Scale the image using {@link Matrix.ScaleToFit#CENTER}.
-         * From XML, use this syntax:
-         * <code>android:scaleType="fitCenter"</code>.
-         */
-        FIT_CENTER  (3),
-        /**
-         * Scale the image using {@link Matrix.ScaleToFit#END}.
-         * From XML, use this syntax: <code>android:scaleType="fitEnd"</code>.
-         */
-        FIT_END     (4),
-        /**
-         * Center the image in the view, but perform no scaling.
-         * From XML, use this syntax: <code>android:scaleType="center"</code>.
-         */
-        CENTER      (5),
-        /**
-         * Scale the image uniformly (maintain the image's aspect ratio) so
-         * that both dimensions (width and height) of the image will be equal
-         * to or larger than the corresponding dimension of the view
-         * (minus padding). The image is then centered in the view.
-         * From XML, use this syntax: <code>android:scaleType="centerCrop"</code>.
-         */
-        CENTER_CROP (6),
-        /**
-         * Scale the image uniformly (maintain the image's aspect ratio) so
-         * that both dimensions (width and height) of the image will be equal
-         * to or less than the corresponding dimension of the view
-         * (minus padding). The image is then centered in the view.
-         * From XML, use this syntax: <code>android:scaleType="centerInside"</code>.
-         */
-        CENTER_INSIDE (7);
-
-        ScaleType(int ni) {
-            nativeInt = ni;
-        }
-        final int nativeInt;
-    }
-
     public void setScaleType(android.widget.ImageView.ScaleType scaleType) {
         if (scaleType == null) {
             throw new NullPointerException();
@@ -509,8 +444,14 @@ public class CustomImageView extends View {
 
     private static Matrix.ScaleToFit scaleTypeToScaleToFit(android.widget.ImageView.ScaleType st)  {
         // ScaleToFit enum to their corresponding Matrix.ScaleToFit values
-        return sS2FArray[st.nativeInt - 1];
+        return sS2FArray[getScaleNativeInt(st) - 1];
     }
+
+    private static int getScaleNativeInt(android.widget.ImageView.ScaleType st) {
+        int result = (int)ReflectUtil.getFieldValue(st, "nativeInt");
+        return result;
+    }
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -586,7 +527,7 @@ public class CustomImageView extends View {
                                 pleft + pright;
 
                         // Allow the width to outgrow its original estimate if height is fixed.
-                        if (!resizeHeight && !mAdjustViewBoundsCompat) {
+                        if (!resizeHeight) {
                             widthSize = resolveAdjustedSize(newWidth, mMaxWidth, widthMeasureSpec);
                         }
 
@@ -602,7 +543,7 @@ public class CustomImageView extends View {
                                 ptop + pbottom;
 
                         // Allow the height to outgrow its original estimate if width is fixed.
-                        if (!resizeWidth && !mAdjustViewBoundsCompat) {
+                        if (!resizeWidth) {
                             heightSize = resolveAdjustedSize(newHeight, mMaxHeight,
                                     heightMeasureSpec);
                         }
@@ -657,12 +598,19 @@ public class CustomImageView extends View {
         return result;
     }
 
+//    @Override
+//    protected boolean setFrame(int l, int t, int r, int b) {
+//        boolean changed = super.setFrame(l, t, r, b);
+//        mHaveFrame = true;
+//        configureBounds();
+//        return changed;
+//    }
+
     @Override
-    protected boolean setFrame(int l, int t, int r, int b) {
-        boolean changed = super.setFrame(l, t, r, b);
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
         mHaveFrame = true;
         configureBounds();
-        return changed;
     }
 
     private void configureBounds() {
@@ -913,7 +861,7 @@ public class CustomImageView extends View {
             if (mHasColorFilter) {
                 mDrawable.setColorFilter(mColorFilter);
             }
-            mDrawable.setXfermode(mXfermode);
+//            mDrawable.setXfermode(mXfermode);//TODO---
             mDrawable.setAlpha(mAlpha * mViewAlphaScale >> 8);
         }
     }

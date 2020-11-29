@@ -8,7 +8,9 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
+import com.caiy.view.learn.view.CImageView;
 import com.caiy.view.learn.view.custom.ScrollDrawable;
 import com.caiy.view.learn.view.drawable.ProgressDrawable;
 import com.caiy.view.learn.view.drawable.round.RoundedBitmapDrawable;
@@ -21,7 +23,8 @@ public class ScrollDrawableActivity extends Activity {
 
     private static final String TAG = "ScrollDrawableActivity";
 
-    private ImageView mPosterImageView;
+    private RelativeLayout mRootView;
+    private CImageView mPosterImageView;
 
     @Override
     protected void onCreate( Bundle savedInstanceState) {
@@ -31,11 +34,20 @@ public class ScrollDrawableActivity extends Activity {
     }
 
     private void initView() {
-        mPosterImageView = (ImageView)findViewById(R.id.iv_poster);
+        mRootView = (RelativeLayout) findViewById(R.id.rl_root);
+
+        mPosterImageView = new CImageView(this);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(300, 150);
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        mPosterImageView.setLayoutParams(layoutParams);
+        mPosterImageView.setScaleType(ImageView.ScaleType.FIT_XY);
         mPosterImageView.setFocusable(true);
+
+        mRootView.addView(mPosterImageView);
+
         Drawable bitmapDrawable = getResources().getDrawable(R.drawable.taohuayuan_440_608);
         RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), ((BitmapDrawable)bitmapDrawable).getBitmap());
-        roundedBitmapDrawable.setCornerRadius(20F);
+        roundedBitmapDrawable.setCornerRadius(50F, false, true, false , false);
         final ScrollDrawable scrollDrawable = new ScrollDrawable(roundedBitmapDrawable, mPosterImageView.getContext());
         mPosterImageView.setImageDrawable(scrollDrawable);
         Log.i(TAG, roundedBitmapDrawable + " drawable's width=" + roundedBitmapDrawable.getIntrinsicWidth() + " drawable's height=" + roundedBitmapDrawable.getIntrinsicHeight());
