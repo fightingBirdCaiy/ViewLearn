@@ -139,7 +139,7 @@ public class CImageView extends View {
     public void setAdjustViewBounds(boolean adjustViewBounds) {
         mAdjustViewBounds = adjustViewBounds;
         if (adjustViewBounds) {
-            setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
+            setScaleType(ImageView.ScaleType.FIT_CENTER);
         }
     }
 

@@ -28,7 +28,10 @@ import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
+
+import com.caiy.view.learn.R;
 
 import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
@@ -46,12 +49,13 @@ import androidx.annotation.RequiresApi;
  * </p>
  */
 @RequiresApi(9)
-public abstract class RoundedBitmapDrawable extends Drawable {
+public abstract class RoundedBitmapDrawable extends Drawable implements IScrollable {
     private static final int DEFAULT_PAINT_FLAGS =
             Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG;
     final Bitmap mBitmap;
     private int mTargetDensity = DisplayMetrics.DENSITY_DEFAULT;
-    private int mGravity = Gravity.FILL;
+//    private int mGravity = Gravity.FILL;
+    private int mGravity = Gravity.FILL_VERTICAL | Gravity.FILL_HORIZONTAL;
     private final Paint mPaint = new Paint(DEFAULT_PAINT_FLAGS);
     private final BitmapShader mBitmapShader;
     private final Matrix mShaderMatrix = new Matrix();
@@ -69,6 +73,11 @@ public abstract class RoundedBitmapDrawable extends Drawable {
     // These are scaled to match the target density.
     private int mBitmapWidth;
     private int mBitmapHeight;
+
+    //scroll
+    private float mScrollY;
+    private Rect mVisibleRect;
+    private RectF mScrollRect;
 
     /**
      * Returns the paint used to render this drawable.
@@ -267,17 +276,44 @@ public abstract class RoundedBitmapDrawable extends Drawable {
         if (bitmap == null) {
             return;
         }
-
         updateDstRect();
         if (mPaint.getShader() == null) {
             canvas.drawBitmap(bitmap, null, mDstRect, mPaint);
         } else {
-            canvas.drawRoundRect(mDstRectF, mCornerRadius, mCornerRadius, mPaint);
-            redrawBitmapForSquareCorners(canvas);
+            canvas.translate(0, mScrollY);
+            RectF rectF = getRoundRect();
+            canvas.drawRoundRect(rectF, mCornerRadius, mCornerRadius, mPaint);
+            redrawBitmapForSquareCorners(canvas, rectF);
         }
     }
 
-    private void redrawBitmapForSquareCorners(Canvas canvas) {
+    private RectF getRoundRect() {
+        if (mVisibleRect != null && !mVisibleRect.isEmpty()) {
+            if (mScrollRect == null) {
+                mScrollRect = new RectF();
+            }
+            mScrollRect.set(mVisibleRect);
+            mScrollRect.offset(0, -mScrollY);
+            return mScrollRect;
+        }
+
+        return mDstRectF;
+    }
+
+    @Override
+    public void setVisibleRect(Rect rect) {
+        if (mVisibleRect == null) {
+            mVisibleRect = new Rect();
+        }
+        mVisibleRect.set(rect);
+    }
+
+    @Override
+    public void setScrollY(float translationY) {
+        mScrollY = translationY;
+    }
+
+    private void redrawBitmapForSquareCorners(Canvas canvas, RectF rectF) {
         if (all(mCornersRounded)) {
             // no square corners
             return;
@@ -293,10 +329,10 @@ public abstract class RoundedBitmapDrawable extends Drawable {
             return;
         }
 
-        float left = mDstRectF.left;
-        float top = mDstRectF.top;
-        float right = left + mDstRectF.width();
-        float bottom = top + mDstRectF.height();
+        float left = rectF.left;
+        float top = rectF.top;
+        float right = left + rectF.width();
+        float bottom = top + rectF.height();
         float radius = mCornerRadius;
 
         if (!mCornersRounded[Corner.TOP_LEFT]) {

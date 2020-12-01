@@ -35,19 +35,22 @@ public class ScrollDrawableActivity extends Activity {
 
     private void initView() {
         mRootView = (RelativeLayout) findViewById(R.id.rl_root);
+        mRootView.setClipChildren(false);
 
         mPosterImageView = new CImageView(this);
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(300, 150);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(300 + 10 + 10, 150);
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        mPosterImageView.setPadding(10, 0, 10, 0);
         mPosterImageView.setLayoutParams(layoutParams);
         mPosterImageView.setScaleType(ImageView.ScaleType.FIT_XY);
         mPosterImageView.setFocusable(true);
+        mPosterImageView.setBackgroundColor(getResources().getColor(R.color.colorBlue));
 
         mRootView.addView(mPosterImageView);
 
         Drawable bitmapDrawable = getResources().getDrawable(R.drawable.taohuayuan_440_608);
         RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), ((BitmapDrawable)bitmapDrawable).getBitmap());
-        roundedBitmapDrawable.setCornerRadius(50F, false, true, false , false);
+        roundedBitmapDrawable.setCornerRadius(50F, false, true, true , false);
         final ScrollDrawable scrollDrawable = new ScrollDrawable(roundedBitmapDrawable, mPosterImageView.getContext());
         mPosterImageView.setImageDrawable(scrollDrawable);
         Log.i(TAG, roundedBitmapDrawable + " drawable's width=" + roundedBitmapDrawable.getIntrinsicWidth() + " drawable's height=" + roundedBitmapDrawable.getIntrinsicHeight());

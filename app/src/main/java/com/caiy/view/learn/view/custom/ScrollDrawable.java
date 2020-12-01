@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.animation.LinearInterpolator;
 import android.widget.Scroller;
 
+import com.caiy.view.learn.view.drawable.round.IScrollable;
+
 
 /**
  * created by caiyong at 2020/11/10
@@ -100,9 +102,17 @@ public class ScrollDrawable extends Drawable implements Drawable.Callback, Anima
         boolean shouldScroll = false;
         if (mAnimRunning) {
             if (shouldScroll = mScroller.computeScrollOffset()) {
-                canvas.translate(0, mScroller.getCurrY());
+                if (mState.mDrawable instanceof IScrollable) {
+                    ((IScrollable) mState.mDrawable).setScrollY(mScroller.getCurrY());
+                }
             } else if (mScroller.isFinished()) {
-                canvas.translate(0, mScroller.getFinalY());
+                if (mState.mDrawable instanceof IScrollable) {
+                    ((IScrollable) mState.mDrawable).setScrollY(mScroller.getFinalY());
+                }
+            }
+        } else {
+            if (mState.mDrawable instanceof IScrollable) {
+                ((IScrollable) mState.mDrawable).setScrollY(0);
             }
         }
 
@@ -202,6 +212,9 @@ public class ScrollDrawable extends Drawable implements Drawable.Callback, Anima
             int targetH = Math.max(h, (int) (bitmapH / ration + 0.5F));
             mDrawRect.set(0, 0, targetW, targetH);
             mState.mDrawable.setBounds(mDrawRect);
+            if (mState.mDrawable instanceof IScrollable) {
+                ((IScrollable) mState.mDrawable).setVisibleRect(new Rect(0,0, w, h));
+            }
         } else {
             Log.w(TAG, "onBoundsChange warn: w=" + w + " h=" + h);
         }
