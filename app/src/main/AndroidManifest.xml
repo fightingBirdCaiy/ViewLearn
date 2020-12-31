@@ -19,6 +19,7 @@
         <activity android:name=".FocusActivity"/>
         <activity android:name=".ListActivity"/>
         <activity android:name=".DrawableActivity"/>
+        <activity android:name=".SplashActivity"/>
     </application>
 
 </manifest>

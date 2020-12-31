@@ -31,6 +31,10 @@ public class ScrollDrawableActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scroll_drawable);
         initView();
+
+        for (int i = 0; i < 10; i++) {
+            Log.i(TAG, (int) (Math.random() * 2) + "");
+        }
     }
 
     private void initView() {

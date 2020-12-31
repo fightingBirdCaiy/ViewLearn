@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    >
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="开始动画"
+        android:onClick="triggerStartAnim"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="停止动画"
+        android:onClick="triggerStopAnim"
+        />
+
+    <com.caiy.view.learn.view.custom.SimpleFlashView
+        android:id="@+id/flash_v"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        app:corner_radius="15dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="200dp"
+        app:light_image="@drawable/splash_light"
+        app:light_image_width="30dp"
+        />
+</RelativeLayout>

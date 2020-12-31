@@ -23,7 +23,8 @@ public class MainActivity extends Activity {
 //        routeToFocusActivity();
 //        routeToListActivity();
 //        routeToDrawableActivity();
-        routeToScrollDrawableActivity();
+//        routeToScrollDrawableActivity();
+        routeToFlashActivity();
     }
 
     private void routeToScrollActivity() {
@@ -73,5 +74,9 @@ public class MainActivity extends Activity {
 
     private void routeToScrollDrawableActivity() {
         startActivity(new Intent(MainActivity.this, ScrollDrawableActivity.class));
+    }
+
+    private void routeToFlashActivity() {
+        startActivity(new Intent(MainActivity.this, SplashActivity.class));
     }
 }
