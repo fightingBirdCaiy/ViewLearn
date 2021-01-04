@@ -8,6 +8,7 @@
     <declare-styleable name="SimpleFlashView">
         <attr name="light_image" format="reference" />
         <attr name="light_image_width" format="dimension" />
+        <attr name="light_image_height" format="dimension" />
         <attr name="corner_radius" format="dimension" />
     </declare-styleable>
 </resources>

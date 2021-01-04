@@ -20,46 +20,39 @@ import android.view.animation.LinearInterpolator;
 
 import com.caiy.view.learn.R;
 
-import javax.security.auth.login.LoginException;
-
 /**
  * created by caiyong at 2020/12/23
+ * 扫光
  */
 public class SimpleFlashView extends android.view.View {
     private static final long ANIMATOR_DURATION = 3000L;
     private static final int DEFAULT_RADIUS_DP = 9;
-    private static final int DEFAULT_LIGHT_IMAGE_WIDTH = 10;
+    private static final int DEFAULT_LIGHT_IMAGE_WIDTH = 0;
+    private static final int DEFAULT_LIGHT_IMAGE_HEIGHT = 0;
 
     private String TAG = "SimpleFlashView@" + Integer.toHexString(hashCode());
 
     private Bitmap mLightBitmap;
-
-    private Bitmap mRounderBitmap;
-
-    private Paint mFlashPaint;
+    private Bitmap mRoundBitmap;
 
     private Paint mPaint;
+    private Paint mBgPaint;
 
     private int mLeft;
-
     private int mTop;
-
     private int mStart;
-
     private int mEnd;
 
     private ValueAnimator mAnimator;
 
-    private PorterDuffXfermode mPorterDuffXfermode;
-
-    private int mLightImage;
+    private PorterDuffXfermode mPorterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
 
     private int mLightImageWidth;
+    private int mLightImageHeight;
 
-    private int mRadius;
+    private int mCornerRadius;
 
-    private Rect mSrcRect = new Rect();
-    private Rect mDstRect = new Rect();
+    private Rect mLightImageRect = new Rect();
 
     public SimpleFlashView(Context context) {
         this(context,null);
@@ -71,56 +64,56 @@ public class SimpleFlashView extends android.view.View {
 
     public SimpleFlashView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        int lightImageResource = 0;
         if (attrs != null) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.SimpleFlashView);
-            mLightImage = typedArray.getResourceId(R.styleable.SimpleFlashView_light_image, 0);
+            lightImageResource = typedArray.getResourceId(R.styleable.SimpleFlashView_light_image, 0);
             mLightImageWidth = typedArray.getDimensionPixelOffset(R.styleable.SimpleFlashView_light_image_width, DEFAULT_LIGHT_IMAGE_WIDTH);
-            mRadius = typedArray.getDimensionPixelOffset(R.styleable.SimpleFlashView_corner_radius, DEFAULT_RADIUS_DP);
+            mLightImageHeight = typedArray.getDimensionPixelOffset(R.styleable.SimpleFlashView_light_image_height, DEFAULT_LIGHT_IMAGE_HEIGHT);
+            mCornerRadius = typedArray.getDimensionPixelOffset(R.styleable.SimpleFlashView_corner_radius, DEFAULT_RADIUS_DP);
             typedArray.recycle();
         }
-        init();
+        init(lightImageResource);
     }
 
-    private void init() {
+    private void init(int lightImageResource) {
         //初始化光图片
-        mLightBitmap = BitmapFactory.decodeResource(getResources(), mLightImage);
+        mLightBitmap = BitmapFactory.decodeResource(getResources(), lightImageResource);
         if (mLightBitmap != null) {
-            mLightImageWidth = Math.min(mLightImageWidth, mLightBitmap.getWidth());
+            mLightImageWidth = mLightImageWidth <= 0 ? mLightBitmap.getWidth() : mLightImageWidth;
+            mLightImageHeight = mLightImageHeight <= 0 ? mLightBitmap.getHeight() : mLightImageHeight;
         }
-        Log.d(TAG, "light bitmap: w=" + mLightBitmap.getWidth() + " h=" + mLightBitmap.getHeight() +" mLightImageWidth=" + mLightImageWidth);
+        Log.d(TAG, "light bitmap: w=" + mLightBitmap.getWidth() + " h=" + mLightBitmap.getHeight()
+                + " mLightImageWidth=" + mLightImageWidth + " mLightImageHeight=" + mLightImageHeight);
 
         //初始化画笔 设置抗锯齿和防抖动
-        mFlashPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mFlashPaint.setDither(true);
-        mFlashPaint.setFilterBitmap(true);//加快显示速度，本设置项依赖于dither和xfermode的设置
-        
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setDither(true);
-        mPaint.setFilterBitmap(true);
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(Color.BLUE);
-
-        mPorterDuffXfermode = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
+        mPaint.setFilterBitmap(true);//加快显示速度，本设置项依赖于dither和xfermode的设置
+        
+        mBgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mBgPaint.setDither(true);
+        mBgPaint.setFilterBitmap(true);
+        mBgPaint.setStyle(Paint.Style.FILL);
+        mBgPaint.setColor(Color.BLUE);
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        Log.i(TAG, "onSizeChanged: width=" + w + " height=" + h);
         if (mLightBitmap != null) {
             mLeft = mStart = -mLightImageWidth;
-//            mTop = -mBitmap.getHeight() / 2;
-            mTop = -(mLightBitmap.getHeight() - h) / 2;
+            mTop = -(mLightImageHeight - h) / 2;
         }
-        createRounderBitmap();
         mEnd = w;
+        createRoundBitmap();
     }
 
-    private void createRounderBitmap() {
-        mRounderBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(mRounderBitmap);
+    private void createRoundBitmap() {
+        mRoundBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(mRoundBitmap);
         //绘制圆角矩形
-        canvas.drawRoundRect(new RectF(0, 0, getWidth(), getHeight()), mRadius, mRadius, mPaint);
+        canvas.drawRoundRect(new RectF(0, 0, getWidth(), getHeight()), mCornerRadius, mCornerRadius, mBgPaint);
     }
 
     @Override
@@ -128,16 +121,12 @@ public class SimpleFlashView extends android.view.View {
         super.onDraw(canvas);
 
         if (mLightBitmap != null) {
-            int sc = canvas.saveLayer(0, 0, getWidth(), getHeight(), mFlashPaint, Canvas.ALL_SAVE_FLAG);
-            int inset = (mLightBitmap.getWidth() - mLightImageWidth)/2;
-            Log.i(TAG, "onDraw: width=" + canvas.getWidth() + " height=" + canvas.getHeight() + " inset=" + inset);
-
-            mSrcRect.set(0 + inset, 0, mLightBitmap.getWidth() - inset, mLightBitmap.getHeight());
-            mDstRect.set(mLeft, mTop, mLeft + mLightImageWidth, mTop + mLightBitmap.getHeight());
-            canvas.drawBitmap(mLightBitmap, mSrcRect, mDstRect, mFlashPaint);
-            mFlashPaint.setXfermode(mPorterDuffXfermode);
-            canvas.drawBitmap(mRounderBitmap, 0, 0, mFlashPaint);
-            mFlashPaint.setXfermode(null);
+            int sc = canvas.saveLayer(0, 0, getWidth(), getHeight(), mPaint, Canvas.ALL_SAVE_FLAG);
+            mLightImageRect.set(mLeft, mTop, mLeft + mLightImageWidth, mTop + mLightImageHeight);
+            canvas.drawBitmap(mLightBitmap, null, mLightImageRect, mPaint);
+            mPaint.setXfermode(mPorterDuffXfermode);
+            canvas.drawBitmap(mRoundBitmap, 0, 0, mPaint);
+            mPaint.setXfermode(null);
             canvas.restoreToCount(sc);
         }
     }
@@ -165,7 +154,7 @@ public class SimpleFlashView extends android.view.View {
     }
 
     private void initAnimator() {
-        PropertyValuesHolder pvhLeft = PropertyValuesHolder.ofKeyframe(android.view.View.TRANSLATION_X,
+        PropertyValuesHolder pvhLeft = PropertyValuesHolder.ofKeyframe(android.view.View.TRANSLATION_Y,
                 Keyframe.ofFloat(0f, mStart),
                 Keyframe.ofFloat(1f, mEnd)
         );

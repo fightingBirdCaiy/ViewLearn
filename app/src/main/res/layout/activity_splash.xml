@@ -33,6 +33,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="200dp"
         app:light_image="@drawable/splash_light"
-        app:light_image_width="30dp"
+        app:light_image_width="100dp"
+        app:light_image_height="100dp"
         />
 </RelativeLayout>
