@@ -20,6 +20,7 @@
         <activity android:name=".ListActivity"/>
         <activity android:name=".DrawableActivity"/>
         <activity android:name=".SplashActivity"/>
+        <activity android:name=".recycler.RecyclerMainActivity"/>
     </application>
 
 </manifest>

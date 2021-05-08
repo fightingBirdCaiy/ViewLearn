@@ -18,9 +18,10 @@ package android.support.v7.widget.helper;
 
 import android.graphics.Canvas;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.recyclerview.R;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import com.caiy.view.learn.R;
 
 /**
  * Package private class to keep implementations. Putting them inside ItemTouchUIUtil makes them

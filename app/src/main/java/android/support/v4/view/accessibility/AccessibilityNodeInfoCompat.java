@@ -338,81 +338,7 @@ public class AccessibilityNodeInfoCompat {
                 new AccessibilityActionCompat(
                         AccessibilityNodeInfoCompat.ACTION_SET_TEXT, null);
 
-        /**
-         * Action that requests the node make its bounding rectangle visible
-         * on the screen, scrolling if necessary just enough.
-         *
-         * @see View#requestRectangleOnScreen(Rect)
-         */
-        public static final AccessibilityActionCompat ACTION_SHOW_ON_SCREEN =
-                new AccessibilityActionCompat(Build.VERSION.SDK_INT >= 23
-                        ? AccessibilityNodeInfo.AccessibilityAction.ACTION_SHOW_ON_SCREEN : null);
 
-        /**
-         * Action that scrolls the node to make the specified collection
-         * position visible on screen.
-         * <p>
-         * <strong>Arguments:</strong>
-         * <ul>
-         *     <li>{@link AccessibilityNodeInfoCompat#ACTION_ARGUMENT_ROW_INT}</li>
-         *     <li>{@link AccessibilityNodeInfoCompat#ACTION_ARGUMENT_COLUMN_INT}</li>
-         * <ul>
-         *
-         * @see AccessibilityNodeInfoCompat#getCollectionInfo()
-         */
-        public static final AccessibilityActionCompat ACTION_SCROLL_TO_POSITION =
-                new AccessibilityActionCompat(Build.VERSION.SDK_INT >= 23
-                        ? AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_TO_POSITION
-                        : null);
-
-        /**
-         * Action to scroll the node content up.
-         */
-        public static final AccessibilityActionCompat ACTION_SCROLL_UP =
-                new AccessibilityActionCompat(Build.VERSION.SDK_INT >= 23
-                        ? AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_UP : null);
-
-        /**
-         * Action to scroll the node content left.
-         */
-        public static final AccessibilityActionCompat ACTION_SCROLL_LEFT =
-                new AccessibilityActionCompat(Build.VERSION.SDK_INT >= 23
-                        ? AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_LEFT : null);
-
-        /**
-         * Action to scroll the node content down.
-         */
-        public static final AccessibilityActionCompat ACTION_SCROLL_DOWN =
-                new AccessibilityActionCompat(Build.VERSION.SDK_INT >= 23
-                        ? AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_DOWN : null);
-
-        /**
-         * Action to scroll the node content right.
-         */
-        public static final AccessibilityActionCompat ACTION_SCROLL_RIGHT =
-                new AccessibilityActionCompat(Build.VERSION.SDK_INT >= 23
-                        ? AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_RIGHT : null);
-
-        /**
-         * Action that context clicks the node.
-         */
-        public static final AccessibilityActionCompat ACTION_CONTEXT_CLICK =
-                new AccessibilityActionCompat(Build.VERSION.SDK_INT >= 23
-                        ? AccessibilityNodeInfo.AccessibilityAction.ACTION_CONTEXT_CLICK : null);
-
-        /**
-         * Action that sets progress between {@link  RangeInfoCompat#getMin() RangeInfo.getMin()} and
-         * {@link  RangeInfoCompat#getMax() RangeInfo.getMax()}. It should use the same value type as
-         * {@link RangeInfoCompat#getType() RangeInfo.getType()}
-         * <p>
-         * <strong>Arguments:</strong>
-         * {@link AccessibilityNodeInfoCompat#ACTION_ARGUMENT_PROGRESS_VALUE}
-         *
-         * @see RangeInfoCompat
-         */
-        public static final AccessibilityActionCompat ACTION_SET_PROGRESS =
-                new AccessibilityActionCompat(Build.VERSION.SDK_INT >= 24
-                        ? AccessibilityNodeInfo.AccessibilityAction.ACTION_SET_PROGRESS : null);
 
         final Object mAction;
 
@@ -2068,39 +1994,6 @@ public class AccessibilityNodeInfoCompat {
     }
 
     /**
-     * Returns whether the node originates from a view considered important for accessibility.
-     *
-     * @return {@code true} if the node originates from a view considered important for
-     *         accessibility, {@code false} otherwise
-     *
-     * @see View#isImportantForAccessibility()
-     */
-    public boolean isImportantForAccessibility() {
-        if (Build.VERSION.SDK_INT >= 24) {
-            return mInfo.isImportantForAccessibility();
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Sets whether the node is considered important for accessibility.
-     * <p>
-     *   <strong>Note:</strong> Cannot be called from an
-     *   {@link android.accessibilityservice.AccessibilityService}.
-     *   This class is made immutable before being delivered to an AccessibilityService.
-     * </p>
-     *
-     * @param important {@code true} if the node is considered important for accessibility,
-     *                  {@code false} otherwise
-     */
-    public void setImportantForAccessibility(boolean important) {
-        if (Build.VERSION.SDK_INT >= 24) {
-            mInfo.setImportantForAccessibility(important);
-        }
-    }
-
-    /**
      * Gets the package this node comes from.
      *
      * @return The package name.
@@ -2289,42 +2182,6 @@ public class AccessibilityNodeInfoCompat {
     }
 
     /**
-     * Get the drawing order of the view corresponding it this node.
-     * <p>
-     * Drawing order is determined only within the node's parent, so this index is only relative
-     * to its siblings.
-     * <p>
-     * In some cases, the drawing order is essentially simultaneous, so it is possible for two
-     * siblings to return the same value. It is also possible that values will be skipped.
-     *
-     * @return The drawing position of the view corresponding to this node relative to its siblings.
-     */
-    public int getDrawingOrder() {
-        if (Build.VERSION.SDK_INT >= 24) {
-            return mInfo.getDrawingOrder();
-        } else {
-            return 0;
-        }
-    }
-
-    /**
-     * Set the drawing order of the view corresponding it this node.
-     *
-     * <p>
-     *   <strong>Note:</strong> Cannot be called from an
-     *   {@link android.accessibilityservice.AccessibilityService}.
-     *   This class is made immutable before being delivered to an AccessibilityService.
-     * </p>
-     * @param drawingOrderInParent
-     * @throws IllegalStateException If called from an AccessibilityService.
-     */
-    public void setDrawingOrder(int drawingOrderInParent) {
-        if (Build.VERSION.SDK_INT >= 24) {
-            mInfo.setDrawingOrder(drawingOrderInParent);
-        }
-    }
-
-    /**
      * Gets the collection info if the node is a collection. A collection
      * child is always a collection item.
      *
@@ -2457,35 +2314,6 @@ public class AccessibilityNodeInfoCompat {
         }
     }
 
-    /**
-     * Gets whether this node is context clickable.
-     *
-     * @return True if the node is context clickable.
-     */
-    public boolean isContextClickable() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            return mInfo.isContextClickable();
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * Sets whether this node is context clickable.
-     * <p>
-     * <strong>Note:</strong> Cannot be called from an
-     * {@link android.accessibilityservice.AccessibilityService}. This class is made immutable
-     * before being delivered to an AccessibilityService.
-     * </p>
-     *
-     * @param contextClickable True if the node is context clickable.
-     * @throws IllegalStateException If called from an AccessibilityService.
-     */
-    public void setContextClickable(boolean contextClickable) {
-        if (Build.VERSION.SDK_INT >= 23) {
-            mInfo.setContextClickable(contextClickable);
-        }
-    }
 
     /**
      * Sets the error text of this node.

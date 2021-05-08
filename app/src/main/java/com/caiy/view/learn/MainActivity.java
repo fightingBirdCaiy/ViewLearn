@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseArray;
 
+import com.caiy.view.learn.recycler.RecyclerMainActivity;
+
 public class MainActivity extends Activity {
 
     private static final String TAG = "MainActivity";
@@ -25,6 +27,7 @@ public class MainActivity extends Activity {
 //        routeToDrawableActivity();
 //        routeToScrollDrawableActivity();
         routeToFlashActivity();
+        routeToRecyclerMainActivity();
     }
 
     private void routeToScrollActivity() {
@@ -78,5 +81,9 @@ public class MainActivity extends Activity {
 
     private void routeToFlashActivity() {
         startActivity(new Intent(MainActivity.this, SplashActivity.class));
+    }
+
+    private void routeToRecyclerMainActivity() {
+        startActivity(new Intent(MainActivity.this, RecyclerMainActivity.class));
     }
 }
