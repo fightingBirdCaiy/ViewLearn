@@ -2,7 +2,9 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Light.NoTitleBar">
-        <!-- Customize your theme here. -->
+        <item name="android:windowBackground">@color/colorWhite</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
     </style>
 
     <declare-styleable name="SimpleFlashView">

@@ -7,6 +7,7 @@
     <color name="colorPink">#D81B60</color>
     <color name="colorRed">#FF0000</color>
     <color name="colorGray">#666666</color>
+    <color name="colorBlack">#000000</color>
 
     <color name="task_item_progress_bg">#19FFFFFF</color>
     <color name="task_item_progress_start">#1B9F00</color>

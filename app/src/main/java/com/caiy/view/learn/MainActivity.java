@@ -26,7 +26,7 @@ public class MainActivity extends Activity {
 //        routeToListActivity();
 //        routeToDrawableActivity();
 //        routeToScrollDrawableActivity();
-        routeToFlashActivity();
+//        routeToFlashActivity();
         routeToRecyclerMainActivity();
     }
 
