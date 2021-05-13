@@ -45,6 +45,10 @@ public class RecyclerMainActivity extends Activity {
         animalNames.add("Camel");
         animalNames.add("Sheep");
         animalNames.add("Goat");
+        animalNames.add("张三");
+        animalNames.add("李四");
+        animalNames.add("王五");
+        animalNames.add("赵六");
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mAdapter = new MyRecyclerViewAdapter(this, animalNames);
@@ -57,16 +61,24 @@ public class RecyclerMainActivity extends Activity {
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    public void triggerRequestLayout(View view) {
+        mRecyclerView.requestLayout();
+    }
+
+    public void triggerNotifyDataSetChange(View view) {
+        mAdapter.notifyDataSetChanged();
+    }
+
     public static class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
 
-        private List<String> mData;
+        private List<String> mDataList;
         private LayoutInflater mInflater;
         private ItemClickListener mClickListener;
 
         // data is passed into the constructor
         MyRecyclerViewAdapter(Context context, List<String> data) {
             this.mInflater = LayoutInflater.from(context);
-            this.mData = data;
+            this.mDataList = data;
         }
 
         // inflates the row layout from xml when needed
@@ -86,7 +98,7 @@ public class RecyclerMainActivity extends Activity {
         // binds the data to the TextView in each row
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            String animal = mData.get(position);
+            String animal = mDataList.get(position);
             holder.itemView.setBackgroundColor(holder.itemView.hasFocus() ? holder.itemView.getContext().getResources().getColor(R.color.colorBlue) : holder.itemView.getContext().getResources().getColor(R.color.colorGray));
 
             holder.myTextView.setText(animal);
@@ -95,7 +107,7 @@ public class RecyclerMainActivity extends Activity {
         // total number of rows
         @Override
         public int getItemCount() {
-            return mData.size();
+            return mDataList.size();
         }
 
 
@@ -117,7 +129,7 @@ public class RecyclerMainActivity extends Activity {
 
         // convenience method for getting data at click position
         String getItem(int id) {
-            return mData.get(id);
+            return mDataList.get(id);
         }
 
         // allows clicks events to be caught
