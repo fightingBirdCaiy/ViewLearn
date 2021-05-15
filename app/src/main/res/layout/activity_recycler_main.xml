@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,22 +7,22 @@
     android:background="@color/colorWhite"
     >
 
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/v_recycler"
         android:layout_width="200dp"
-        android:layout_height="400dp"
+        android:layout_height="200dp"
         android:layout_marginTop="50dp"
-        android:layout_alignParentTop="true"
-        android:background="@color/colorBlack"
+        android:layout_gravity="left|top"
         />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_toRightOf="@+id/v_recycler"
-        android:layout_alignTop="@+id/v_recycler"
-        android:layout_marginLeft="50dp"
+        android:layout_gravity="left|top"
+        android:layout_marginLeft="250dp"
+        android:layout_marginTop="50dp"
         >
         <Button
             android:layout_width="wrap_content"
@@ -30,11 +30,41 @@
             android:onClick="triggerRequestLayout"
             android:text="requestLayout"
             />
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="triggerNotifyDataSetChange"
             android:text="notifyDataSetChange"
             />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="triggerNotifyItemInserted"
+            android:text="notifyItemInserted"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="triggerNotifyItemRemoved"
+            android:text="notifyItemRemoved"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="triggerNotifyItemChanged"
+            android:text="notifyItemChanged"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="triggerNotifyItemMoved"
+            android:text="notifyItemMoved"
+            android:visibility="gone"
+            />
     </LinearLayout>
-</RelativeLayout>
+</FrameLayout>

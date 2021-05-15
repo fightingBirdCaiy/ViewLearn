@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.caiy.view.learn.R;
-import com.caiy.view.learn.view.custom.MyFocusView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,20 +36,14 @@ public class RecyclerMainActivity extends Activity {
     private void initView() {
         mRecyclerView = findViewById(R.id.v_recycler);
 
-        // data to populate the RecyclerView with
-        List<String> animalNames = new ArrayList<>();
-        animalNames.add("Horse");
-        animalNames.add("Cow");
-        animalNames.add("Camel");
-        animalNames.add("Sheep");
-        animalNames.add("Goat");
-        animalNames.add("张三");
-        animalNames.add("李四");
-        animalNames.add("王五");
-        animalNames.add("赵六");
+        mRecyclerView.getItemAnimator().setAddDuration(1000L);
+        mRecyclerView.getItemAnimator().setChangeDuration(1000L);
+        mRecyclerView.getItemAnimator().setMoveDuration(1000L);
+        mRecyclerView.getItemAnimator().setRemoveDuration(1000L);
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new MyRecyclerViewAdapter(this, animalNames);
+
+        mAdapter = new MyRecyclerViewAdapter(this, getInitDataList());
         mAdapter.setClickListener(new MyRecyclerViewAdapter.ItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -61,12 +53,47 @@ public class RecyclerMainActivity extends Activity {
         mRecyclerView.setAdapter(mAdapter);
     }
 
+    private List<String> getInitDataList() {
+        List<java.lang.String> animalNames = new ArrayList<>();
+        animalNames.add("Horse");
+        animalNames.add("Cow");
+        animalNames.add("Camel");
+        animalNames.add("Sheep");
+        animalNames.add("Goat");
+        animalNames.add("张三");
+        animalNames.add("李四");
+        animalNames.add("王五");
+        animalNames.add("赵六");
+        return animalNames;
+    }
+
     public void triggerRequestLayout(View view) {
         mRecyclerView.requestLayout();
     }
 
     public void triggerNotifyDataSetChange(View view) {
+        mAdapter.setDataList(getInitDataList());
         mAdapter.notifyDataSetChanged();
+    }
+
+    public void triggerNotifyItemInserted(View view) {
+        mAdapter.addData("插入数据", 1);
+        mAdapter.notifyItemInserted(1);
+    }
+
+    public void triggerNotifyItemRemoved(View view) {
+        mAdapter.removeData(1);
+        mAdapter.notifyItemRemoved(1);
+    }
+
+    public void triggerNotifyItemChanged(View view) {
+        mAdapter.changeData("改变数据",1);
+        mAdapter.notifyItemChanged(1);
+    }
+
+    public void triggerNotifyItemMoved(View view) {
+        mAdapter.moveData(0,2);
+        mAdapter.notifyItemMoved(0, 2);
     }
 
     public static class MyRecyclerViewAdapter extends RecyclerView.Adapter<MyRecyclerViewAdapter.ViewHolder> {
@@ -135,6 +162,35 @@ public class RecyclerMainActivity extends Activity {
         // allows clicks events to be caught
         void setClickListener(ItemClickListener itemClickListener) {
             this.mClickListener = itemClickListener;
+        }
+
+        public void setDataList(List<String> dataList) {
+            mDataList.clear();
+            if (dataList != null) {
+                mDataList.addAll(dataList);
+            }
+        }
+
+        public void addData(String data, int index) {
+            mDataList.add(index, data);
+        }
+
+        public void removeData(int index) {
+            mDataList.remove(index);
+        }
+
+        public void changeData(String data, int index) {
+            mDataList.set(index, data);
+        }
+
+        public void moveData(int fromIndex, int toIndex) {
+            if (fromIndex < toIndex) {
+                String fromValue = mDataList.remove(fromIndex);
+                mDataList.add(toIndex -1, fromValue);
+            } else {
+                String fromValue = mDataList.remove(fromIndex);
+                mDataList.add(toIndex, fromValue);
+            }
         }
 
         // parent activity will implement this method to respond to click events
