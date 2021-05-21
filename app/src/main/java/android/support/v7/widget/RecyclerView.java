@@ -2879,7 +2879,9 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
                 cancelTouch();
             }
         }
-        return mScrollState == SCROLL_STATE_DRAGGING;
+        boolean result = mScrollState == SCROLL_STATE_DRAGGING;
+        Log.i("TAG/RecyclerView", "onInterceptTouchEvent: " + getMotionEventActionInfo(e) + " intercept=" + result);
+        return result;
     }
 
     @Override
@@ -3034,7 +3036,35 @@ public class RecyclerView extends ViewGroup implements ScrollingView, NestedScro
         }
         vtev.recycle();
 
+        Log.i("TAG/RecyclerView", "onTouchEvent: " + getMotionEventActionInfo(e));
         return true;
+    }
+
+    private String getMotionEventActionInfo(MotionEvent e) {
+        String result = "NONE";
+        switch(e.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                result = "ACTION_DOWN";
+                break;
+            case MotionEvent.ACTION_POINTER_DOWN:
+                result = "ACTION_POINTER_DOWN";
+                break;
+            case MotionEvent.ACTION_MOVE:
+                result = "ACTION_MOVE";
+                break;
+            case MotionEvent.ACTION_POINTER_UP:
+                result = "ACTION_POINTER_UP";
+                break;
+            case MotionEvent.ACTION_UP:
+                result = "ACTION_UP";
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                result = "ACTION_CANCEL";
+                break;
+            default:
+
+        }
+        return result;
     }
 
     private void resetTouch() {
